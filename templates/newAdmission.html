@@ -104,6 +104,190 @@
     </div>
   </footer>
 
-  <script src="../assets/script.js"></script>
+  <script>
+    const progress = document.querySelector(".site-progress");
+    const header = document.querySelector(".site-header");
+    const revealItems = document.querySelectorAll(".reveal");
+    const counters = document.querySelectorAll("[data-count]");
+    const parallaxItems = document.querySelectorAll("[data-parallax]");
+    const languageToggle = document.querySelector("[data-lang-toggle]");
+    const originalTitle = document.title;
+
+    const bnText = {
+      "Adarsha Nursery School": "এ. ম. আদর্শ নার্সারি শিশু বিদ্যাপিঠ",
+      "Private learning campus": "একটি বেসরকারি শিক্ষাপ্রতিষ্ঠান",
+      "About": "পরিচিতি",
+      "Notice": "নোটিশ",
+      "Next Class": "পরবর্তী শ্রেণি",
+      "Back to Home": "হোমে ফিরে যান",
+      "New Admission | Adarsha Nursery School": "নতুন ভর্তি | আদর্শ নার্সারি স্কুল",
+      "New admission": "নতুন ভর্তি",
+      "Bring these items for first-time admission.": "প্রথমবার ভর্তির জন্য এগুলি সঙ্গে আনুন।",
+      "Static dummy information for parents. Replace the list with your exact school requirements, fee amount, and office timing.": "অভিভাবকদের জন্য স্ট্যাটিক নমুনা তথ্য। আপনার স্কুলের সঠিক প্রয়োজনীয়তা, ফি এবং অফিস সময় দিয়ে তালিকাটি বদলে দিন।",
+      "Student documents": "শিক্ষার্থীর কাগজপত্র",
+      "Original birth certificate and one photocopy": "জন্ম সনদের মূল কপি ও একটি ফটোকপি",
+      "Four recent passport-size photographs": "সাম্প্রতিক চারটি পাসপোর্ট সাইজ ছবি",
+      "Previous school transfer certificate if applicable": "প্রযোজ্য হলে পূর্বের স্কুলের ট্রান্সফার সার্টিফিকেট",
+      "Blood group note or health card if available": "থাকলে রক্তের গ্রুপের নোট বা স্বাস্থ্য কার্ড",
+      "Parent documents": "অভিভাবকের কাগজপত্র",
+      "Parent or guardian ID proof photocopy": "অভিভাবক বা গার্ডিয়ানের পরিচয়পত্রের ফটোকপি",
+      "Current address proof photocopy": "বর্তমান ঠিকানার প্রমাণপত্রের ফটোকপি",
+      "Two passport-size photographs of parent or guardian": "অভিভাবক বা গার্ডিয়ানের দুটি পাসপোর্ট সাইজ ছবি",
+      "Emergency contact number written clearly": "জরুরি যোগাযোগ নম্বর পরিষ্কারভাবে লেখা",
+      "School formalities": "স্কুলের আনুষ্ঠানিকতা",
+      "Completed admission form with signature": "স্বাক্ষরসহ পূরণ করা ভর্তি ফর্ম",
+      "Admission fee and first month fee": "ভর্তি ফি এবং প্রথম মাসের ফি",
+      "Uniform measurement details": "ইউনিফর্মের মাপের তথ্য",
+      "Transport requirement form if needed": "প্রয়োজন হলে পরিবহন চাহিদা ফর্ম",
+      "Office timing": "অফিস সময়",
+      "Suggested admission desk schedule.": "ভর্তি সহায়তা কেন্দ্রের প্রস্তাবিত সময়সূচি।",
+      "This table is also dummy content for quick replacement.": "এই টেবিলটিও দ্রুত বদলানোর জন্য নমুনা তথ্য।",
+      "Purpose": "উদ্দেশ্য",
+      "Time": "সময়",
+      "Bring Along": "সঙ্গে আনবেন",
+      "Form collection": "ফর্ম সংগ্রহ",
+      "10:00 AM to 2:00 PM": "সকাল ১০:০০টা থেকে দুপুর ২:০০টা",
+      "Parent ID proof": "অভিভাবকের পরিচয়পত্র",
+      "Document verification": "কাগজপত্র যাচাই",
+      "11:00 AM to 1:30 PM": "সকাল ১১:০০টা থেকে দুপুর ১:৩০টা",
+      "Original documents and copies": "মূল কাগজপত্র ও কপি",
+      "Fee counter": "ফি জমা কেন্দ্র",
+      "10:30 AM to 2:30 PM": "সকাল ১০:৩০টা থেকে দুপুর ২:৩০টা",
+      "Cash or approved payment mode": "নগদ বা অনুমোদিত পেমেন্ট পদ্ধতি",
+      "Uniform guidance": "ইউনিফর্ম নির্দেশনা",
+      "12:00 PM to 3:00 PM": "দুপুর ১২:০০টা থেকে বিকেল ৩:০০টা",
+      "Student measurement details": "শিক্ষার্থীর মাপের তথ্য",
+      "Admission checklist uses editable placeholder content.": "ভর্তি চেকলিস্টে সম্পাদনাযোগ্য নমুনা লেখা ব্যবহার করা হয়েছে।"
+    };
+
+
+    const originalText = new WeakMap();
+    const translatableNodes = [];
+
+    if (!("IntersectionObserver" in window)) {
+      revealItems.forEach((item) => item.classList.add("in-view"));
+      counters.forEach((item) => animateCounter(item));
+    }
+
+    function collectTextNodes(root) {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+        acceptNode(node) {
+          const text = node.textContent.trim();
+          const parent = node.parentElement;
+
+          if (!text || !parent || parent.closest("[data-count]") || ["SCRIPT", "STYLE"].includes(parent.tagName)) {
+            return NodeFilter.FILTER_REJECT;
+          }
+
+          return NodeFilter.FILTER_ACCEPT;
+        }
+      });
+
+      while (walker.nextNode()) {
+        const node = walker.currentNode;
+        originalText.set(node, node.textContent);
+        translatableNodes.push(node);
+      }
+    }
+
+    function translateValue(value, lang) {
+      const trimmed = value.trim();
+      if (lang === "en" || !bnText[trimmed]) return value;
+      return value.replace(trimmed, bnText[trimmed]);
+    }
+
+    function applyLanguage(lang) {
+      document.documentElement.lang = lang === "bn" ? "bn" : "en";
+
+      translatableNodes.forEach((node) => {
+        const original = originalText.get(node);
+        node.textContent = translateValue(original, lang);
+      });
+
+      document.title = translateValue(originalTitle, lang);
+
+      if (languageToggle) {
+        languageToggle.textContent = lang === "bn" ? "English" : "বাংলা";
+        languageToggle.setAttribute("aria-label", lang === "bn" ? "Switch to English" : "বাংলায় দেখুন");
+      }
+    }
+
+    collectTextNodes(document.body);
+
+    const savedLanguage = localStorage.getItem("schoolLanguage") || "bn";
+    applyLanguage(savedLanguage);
+
+    if (languageToggle) {
+      languageToggle.addEventListener("click", () => {
+        const nextLanguage = document.documentElement.lang === "bn" ? "en" : "bn";
+        localStorage.setItem("schoolLanguage", nextLanguage);
+        applyLanguage(nextLanguage);
+      });
+    }
+
+    function updateChrome() {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const ratio = maxScroll > 0 ? window.scrollY / maxScroll : 0;
+
+      if (progress) {
+        progress.style.width = `${Math.min(100, Math.max(0, ratio * 100))}%`;
+      }
+
+      if (header) {
+        header.classList.toggle("is-scrolled", window.scrollY > 12);
+      }
+
+      parallaxItems.forEach((item) => {
+        const speed = Number(item.dataset.parallax || 0.12);
+        item.style.transform = `translate3d(0, ${window.scrollY * speed}px, 0)`;
+      });
+    }
+
+    function animateCounter(item) {
+      const target = Number(item.dataset.count || 0);
+      const suffix = item.dataset.suffix || "";
+      const duration = 1200;
+      const start = performance.now();
+
+      function tick(now) {
+        const progressValue = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - progressValue, 3);
+        item.textContent = `${Math.round(target * eased)}${suffix}`;
+
+        if (progressValue < 1) {
+          requestAnimationFrame(tick);
+        }
+      }
+
+      requestAnimationFrame(tick);
+    }
+
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+
+            entry.target.classList.add("in-view");
+
+            if (entry.target.hasAttribute("data-count") && !entry.target.dataset.done) {
+              entry.target.dataset.done = "true";
+              animateCounter(entry.target);
+            }
+
+            observer.unobserve(entry.target);
+          });
+        },
+        { threshold: 0.16 }
+      );
+
+      revealItems.forEach((item) => observer.observe(item));
+      counters.forEach((item) => observer.observe(item));
+    }
+
+    window.addEventListener("scroll", updateChrome, { passive: true });
+    window.addEventListener("resize", updateChrome);
+    updateChrome();
+  </script>
 </body>
 </html>

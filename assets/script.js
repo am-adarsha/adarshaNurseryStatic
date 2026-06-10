@@ -7,7 +7,7 @@ const languageToggle = document.querySelector("[data-lang-toggle]");
 const originalTitle = document.title;
 
 const bnText = {
-  "Adarsha Nursery School": "আদর্শ নার্সারি স্কুল",
+  "Adarsha Nursery School": "এ. ম. আদর্শ নার্সারি  শিশু বিদ্যাপিঠ",
   "Private learning campus": "একটি বেসরকারি শিক্ষাপ্রতিষ্ঠান",
   "About": "পরিচিতি",
   "Notice": "নোটিশ",

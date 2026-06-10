@@ -83,6 +83,175 @@
     </div>
   </footer>
 
-  <script src="../assets/script.js"></script>
+  <script>
+    const progress = document.querySelector(".site-progress");
+    const header = document.querySelector(".site-header");
+    const revealItems = document.querySelectorAll(".reveal");
+    const counters = document.querySelectorAll("[data-count]");
+    const parallaxItems = document.querySelectorAll("[data-parallax]");
+    const languageToggle = document.querySelector("[data-lang-toggle]");
+    const originalTitle = document.title;
+
+    const bnText = {
+      "Adarsha Nursery School": "এ. ম. আদর্শ নার্সারি শিশু বিদ্যাপিঠ",
+      "Private learning campus": "একটি বেসরকারি শিক্ষাপ্রতিষ্ঠান",
+      "About": "পরিচিতি",
+      "New Admission": "নতুন ভর্তি",
+      "Next Class": "পরবর্তী শ্রেণি",
+      "Back to Home": "হোমে ফিরে যান",
+      "Notice | Adarsha Nursery School": "নোটিশ | আদর্শ নার্সারি স্কুল",
+      "Notice board": "নোটিশ বোর্ড",
+      "Important updates for parents and students.": "অভিভাবক ও শিক্ষার্থীদের জন্য গুরুত্বপূর্ণ ঘোষণা।",
+      "Dummy notices are shown here. Replace dates, events, and instructions with the school’s real announcements whenever needed.": "এখানে নমুনা নোটিশ দেওয়া আছে। প্রয়োজন অনুযায়ী তারিখ, অনুষ্ঠান এবং নির্দেশনা স্কুলের আসল ঘোষণায় বদলে দিন।",
+      "10 June 2026": "১০ জুন ২০২৬",
+      "Admission form submission window": "ভর্তি ফর্ম জমার সময়",
+      "New admission forms will be accepted at the school office from 10:00 AM to 2:00 PM on working days.": "কর্মদিবসে সকাল ১০:০০টা থেকে দুপুর ২:০০টা পর্যন্ত স্কুল অফিসে নতুন ভর্তি ফর্ম গ্রহণ করা হবে।",
+      "15 June 2026": "১৫ জুন ২০২৬",
+      "Parent orientation day": "অভিভাবক পরিচিতি সভা",
+      "Parents of newly admitted students are requested to attend a short orientation with the class teacher.": "নতুন ভর্তি হওয়া শিক্ষার্থীদের অভিভাবকদের শ্রেণি শিক্ষকের সঙ্গে একটি সংক্ষিপ্ত পরিচিতি সভায় অংশ নেওয়ার অনুরোধ করা হচ্ছে।",
+      "20 June 2026": "২০ জুন ২০২৬",
+      "Uniform measurement desk": "ইউনিফর্ম মাপ নেওয়ার কেন্দ্র",
+      "Uniform measurements and book list guidance will be available near the reception counter.": "রিসেপশনের কাছে ইউনিফর্মের মাপ এবং বইয়ের তালিকা সংক্রান্ত নির্দেশনা পাওয়া যাবে।",
+      "01 July 2026": "০১ জুলাই ২০২৬",
+      "First day of academic session": "শিক্ষাবর্ষের প্রথম দিন",
+      "Students should arrive in school uniform with ID card, water bottle, tiffin, and diary.": "শিক্ষার্থীরা স্কুল ইউনিফর্ম, আইডি কার্ড, পানির বোতল, টিফিন এবং ডায়েরি নিয়ে আসবে।",
+      "05 July 2026": "০৫ জুলাই ২০২৬",
+      "Health and hygiene reminder": "স্বাস্থ্য ও পরিচ্ছন্নতা স্মরণিকা",
+      "Parents are requested to label all belongings and send a small hand towel daily.": "অভিভাবকদের সব জিনিসে নাম লিখে দিতে এবং প্রতিদিন একটি ছোট হাত তোয়ালে পাঠাতে অনুরোধ করা হচ্ছে।",
+      "12 July 2026": "১২ জুলাই ২০২৬",
+      "Monthly parent meeting": "মাসিক অভিভাবক মিটিং",
+      "Class-wise meeting slots will be shared through the notice board and school diary.": "শ্রেণিভিত্তিক মিটিং সময় নোটিশ বোর্ড ও স্কুল ডায়েরির মাধ্যমে জানানো হবে।",
+      "Notice details are placeholders for easy editing.": "সহজে সম্পাদনার জন্য নোটিশগুলি নমুনা লেখা হিসেবে রাখা হয়েছে।"
+    };
+
+
+    const originalText = new WeakMap();
+    const translatableNodes = [];
+
+    if (!("IntersectionObserver" in window)) {
+      revealItems.forEach((item) => item.classList.add("in-view"));
+      counters.forEach((item) => animateCounter(item));
+    }
+
+    function collectTextNodes(root) {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+        acceptNode(node) {
+          const text = node.textContent.trim();
+          const parent = node.parentElement;
+
+          if (!text || !parent || parent.closest("[data-count]") || ["SCRIPT", "STYLE"].includes(parent.tagName)) {
+            return NodeFilter.FILTER_REJECT;
+          }
+
+          return NodeFilter.FILTER_ACCEPT;
+        }
+      });
+
+      while (walker.nextNode()) {
+        const node = walker.currentNode;
+        originalText.set(node, node.textContent);
+        translatableNodes.push(node);
+      }
+    }
+
+    function translateValue(value, lang) {
+      const trimmed = value.trim();
+      if (lang === "en" || !bnText[trimmed]) return value;
+      return value.replace(trimmed, bnText[trimmed]);
+    }
+
+    function applyLanguage(lang) {
+      document.documentElement.lang = lang === "bn" ? "bn" : "en";
+
+      translatableNodes.forEach((node) => {
+        const original = originalText.get(node);
+        node.textContent = translateValue(original, lang);
+      });
+
+      document.title = translateValue(originalTitle, lang);
+
+      if (languageToggle) {
+        languageToggle.textContent = lang === "bn" ? "English" : "বাংলা";
+        languageToggle.setAttribute("aria-label", lang === "bn" ? "Switch to English" : "বাংলায় দেখুন");
+      }
+    }
+
+    collectTextNodes(document.body);
+
+    const savedLanguage = localStorage.getItem("schoolLanguage") || "bn";
+    applyLanguage(savedLanguage);
+
+    if (languageToggle) {
+      languageToggle.addEventListener("click", () => {
+        const nextLanguage = document.documentElement.lang === "bn" ? "en" : "bn";
+        localStorage.setItem("schoolLanguage", nextLanguage);
+        applyLanguage(nextLanguage);
+      });
+    }
+
+    function updateChrome() {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const ratio = maxScroll > 0 ? window.scrollY / maxScroll : 0;
+
+      if (progress) {
+        progress.style.width = `${Math.min(100, Math.max(0, ratio * 100))}%`;
+      }
+
+      if (header) {
+        header.classList.toggle("is-scrolled", window.scrollY > 12);
+      }
+
+      parallaxItems.forEach((item) => {
+        const speed = Number(item.dataset.parallax || 0.12);
+        item.style.transform = `translate3d(0, ${window.scrollY * speed}px, 0)`;
+      });
+    }
+
+    function animateCounter(item) {
+      const target = Number(item.dataset.count || 0);
+      const suffix = item.dataset.suffix || "";
+      const duration = 1200;
+      const start = performance.now();
+
+      function tick(now) {
+        const progressValue = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - progressValue, 3);
+        item.textContent = `${Math.round(target * eased)}${suffix}`;
+
+        if (progressValue < 1) {
+          requestAnimationFrame(tick);
+        }
+      }
+
+      requestAnimationFrame(tick);
+    }
+
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+
+            entry.target.classList.add("in-view");
+
+            if (entry.target.hasAttribute("data-count") && !entry.target.dataset.done) {
+              entry.target.dataset.done = "true";
+              animateCounter(entry.target);
+            }
+
+            observer.unobserve(entry.target);
+          });
+        },
+        { threshold: 0.16 }
+      );
+
+      revealItems.forEach((item) => observer.observe(item));
+      counters.forEach((item) => observer.observe(item));
+    }
+
+    window.addEventListener("scroll", updateChrome, { passive: true });
+    window.addEventListener("resize", updateChrome);
+    updateChrome();
+  </script>
 </body>
 </html>

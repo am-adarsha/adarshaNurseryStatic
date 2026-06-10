@@ -104,6 +104,190 @@
     </div>
   </footer>
 
-  <script src="../assets/script.js"></script>
+  <script>
+    const progress = document.querySelector(".site-progress");
+    const header = document.querySelector(".site-header");
+    const revealItems = document.querySelectorAll(".reveal");
+    const counters = document.querySelectorAll("[data-count]");
+    const parallaxItems = document.querySelectorAll("[data-parallax]");
+    const languageToggle = document.querySelector("[data-lang-toggle]");
+    const originalTitle = document.title;
+
+    const bnText = {
+      "Adarsha Nursery School": "এ. ম. আদর্শ নার্সারি শিশু বিদ্যাপিঠ",
+      "Private learning campus": "একটি বেসরকারি শিক্ষাপ্রতিষ্ঠান",
+      "About": "পরিচিতি",
+      "Notice": "নোটিশ",
+      "New Admission": "নতুন ভর্তি",
+      "Back to Home": "হোমে ফিরে যান",
+      "20 June 2026": "২০ জুন ২০২৬",
+      "Fee counter": "ফি জমা কেন্দ্র",
+      "Next Class Admission | Adarsha Nursery School": "পরবর্তী শ্রেণির ভর্তি | আদর্শ নার্সারি স্কুল",
+      "Next class admission": "পরবর্তী শ্রেণির ভর্তি",
+      "Simple requirements for promoted students.": "উত্তীর্ণ শিক্ষার্থীদের জন্য সহজ প্রয়োজনীয়তা।",
+      "This page is for students moving to the next class. The items below are dummy details for renewal or promotion admission.": "এই পেজটি পরবর্তী শ্রেণিতে ওঠা শিক্ষার্থীদের জন্য। নিচের বিষয়গুলি নবায়ন বা পরবর্তী শ্রেণিতে ভর্তির নমুনা তথ্য।",
+      "Academic items": "শিক্ষাগত জিনিসপত্র",
+      "Previous class report card photocopy": "পূর্বের শ্রেণির রিপোর্ট কার্ডের ফটোকপি",
+      "School diary with updated parent contact": "হালনাগাদ অভিভাবক যোগাযোগসহ স্কুল ডায়েরি",
+      "Completed next class admission form": "পূরণ করা পরবর্তী শ্রেণির ভর্তি ফর্ম",
+      "Pending homework or project file if requested": "চাওয়া হলে অসমাপ্ত হোমওয়ার্ক বা প্রজেক্ট ফাইল",
+      "Fee and records": "ফি ও রেকর্ড",
+      "Previous dues clearance receipt": "পূর্বের বকেয়া পরিশোধের রসিদ",
+      "Next class admission fee": "পরবর্তী শ্রেণির ভর্তি ফি",
+      "Monthly fee card or student ID card": "মাসিক ফি কার্ড বা শিক্ষার্থীর আইডি কার্ড",
+      "Transport renewal slip if applicable": "প্রযোজ্য হলে পরিবহন নবায়ন স্লিপ",
+      "Student essentials": "শিক্ষার্থীর প্রয়োজনীয় জিনিস",
+      "Two passport-size photographs": "দুটি পাসপোর্ট সাইজ ছবি",
+      "Updated uniform size requirement": "হালনাগাদ ইউনিফর্ম মাপের প্রয়োজনীয়তা",
+      "Books and copies list collection": "বই ও খাতার তালিকা সংগ্রহ",
+      "Medical update note if any condition changed": "স্বাস্থ্য সংক্রান্ত কোনো পরিবর্তন থাকলে লিখিত তথ্য",
+      "Promotion note": "পরবর্তী শ্রেণিতে ভর্তির নোট",
+      "Keep the process calm and quick.": "প্রক্রিয়াটি সহজ ও দ্রুত রাখুন।",
+      "Parents can complete the next class admission formalities at the school office. Please replace these dummy paragraphs with your real fee rules, promotion policy, and last date.": "অভিভাবকেরা স্কুল অফিসে পরবর্তী শ্রেণির ভর্তি আনুষ্ঠানিকতা সম্পন্ন করতে পারবেন। অনুগ্রহ করে এই নমুনা অনুচ্ছেদগুলি আপনার আসল ফি নিয়ম, শ্রেণি-উন্নয়ন নীতি এবং শেষ তারিখ দিয়ে বদলে দিন।",
+      "Class Group": "শ্রেণি গ্রুপ",
+      "Suggested Date": "প্রস্তাবিত তারিখ",
+      "Desk": "কেন্দ্র",
+      "Nursery to LKG": "নার্সারি থেকে এলকেজি",
+      "18 June 2026": "১৮ জুন ২০২৬",
+      "Ground floor office": "গ্রাউন্ড ফ্লোর অফিস",
+      "LKG to UKG": "এলকেজি থেকে ইউকেজি",
+      "19 June 2026": "১৯ জুন ২০২৬",
+      "Admission desk": "ভর্তি সহায়তা কেন্দ্র",
+      "UKG to Class I": "ইউকেজি থেকে প্রথম শ্রেণি",
+      "Academic counter": "শিক্ষা বিভাগীয় কেন্দ্র",
+      "Class I onward": "প্রথম শ্রেণি থেকে পরবর্তী",
+      "21 June 2026": "২১ জুন ২০২৬",
+      "Next class details are placeholders.": "পরবর্তী শ্রেণির তথ্যগুলি নমুনা হিসেবে রাখা হয়েছে।"
+    };
+
+
+    const originalText = new WeakMap();
+    const translatableNodes = [];
+
+    if (!("IntersectionObserver" in window)) {
+      revealItems.forEach((item) => item.classList.add("in-view"));
+      counters.forEach((item) => animateCounter(item));
+    }
+
+    function collectTextNodes(root) {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+        acceptNode(node) {
+          const text = node.textContent.trim();
+          const parent = node.parentElement;
+
+          if (!text || !parent || parent.closest("[data-count]") || ["SCRIPT", "STYLE"].includes(parent.tagName)) {
+            return NodeFilter.FILTER_REJECT;
+          }
+
+          return NodeFilter.FILTER_ACCEPT;
+        }
+      });
+
+      while (walker.nextNode()) {
+        const node = walker.currentNode;
+        originalText.set(node, node.textContent);
+        translatableNodes.push(node);
+      }
+    }
+
+    function translateValue(value, lang) {
+      const trimmed = value.trim();
+      if (lang === "en" || !bnText[trimmed]) return value;
+      return value.replace(trimmed, bnText[trimmed]);
+    }
+
+    function applyLanguage(lang) {
+      document.documentElement.lang = lang === "bn" ? "bn" : "en";
+
+      translatableNodes.forEach((node) => {
+        const original = originalText.get(node);
+        node.textContent = translateValue(original, lang);
+      });
+
+      document.title = translateValue(originalTitle, lang);
+
+      if (languageToggle) {
+        languageToggle.textContent = lang === "bn" ? "English" : "বাংলা";
+        languageToggle.setAttribute("aria-label", lang === "bn" ? "Switch to English" : "বাংলায় দেখুন");
+      }
+    }
+
+    collectTextNodes(document.body);
+
+    const savedLanguage = localStorage.getItem("schoolLanguage") || "bn";
+    applyLanguage(savedLanguage);
+
+    if (languageToggle) {
+      languageToggle.addEventListener("click", () => {
+        const nextLanguage = document.documentElement.lang === "bn" ? "en" : "bn";
+        localStorage.setItem("schoolLanguage", nextLanguage);
+        applyLanguage(nextLanguage);
+      });
+    }
+
+    function updateChrome() {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const ratio = maxScroll > 0 ? window.scrollY / maxScroll : 0;
+
+      if (progress) {
+        progress.style.width = `${Math.min(100, Math.max(0, ratio * 100))}%`;
+      }
+
+      if (header) {
+        header.classList.toggle("is-scrolled", window.scrollY > 12);
+      }
+
+      parallaxItems.forEach((item) => {
+        const speed = Number(item.dataset.parallax || 0.12);
+        item.style.transform = `translate3d(0, ${window.scrollY * speed}px, 0)`;
+      });
+    }
+
+    function animateCounter(item) {
+      const target = Number(item.dataset.count || 0);
+      const suffix = item.dataset.suffix || "";
+      const duration = 1200;
+      const start = performance.now();
+
+      function tick(now) {
+        const progressValue = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - progressValue, 3);
+        item.textContent = `${Math.round(target * eased)}${suffix}`;
+
+        if (progressValue < 1) {
+          requestAnimationFrame(tick);
+        }
+      }
+
+      requestAnimationFrame(tick);
+    }
+
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+
+            entry.target.classList.add("in-view");
+
+            if (entry.target.hasAttribute("data-count") && !entry.target.dataset.done) {
+              entry.target.dataset.done = "true";
+              animateCounter(entry.target);
+            }
+
+            observer.unobserve(entry.target);
+          });
+        },
+        { threshold: 0.16 }
+      );
+
+      revealItems.forEach((item) => observer.observe(item));
+      counters.forEach((item) => observer.observe(item));
+    }
+
+    window.addEventListener("scroll", updateChrome, { passive: true });
+    window.addEventListener("resize", updateChrome);
+    updateChrome();
+  </script>
 </body>
 </html>

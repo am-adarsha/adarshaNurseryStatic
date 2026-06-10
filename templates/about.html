@@ -91,6 +91,176 @@
     </div>
   </footer>
 
-  <script src="../assets/script.js"></script>
+  <script>
+    const progress = document.querySelector(".site-progress");
+    const header = document.querySelector(".site-header");
+    const revealItems = document.querySelectorAll(".reveal");
+    const counters = document.querySelectorAll("[data-count]");
+    const parallaxItems = document.querySelectorAll("[data-parallax]");
+    const languageToggle = document.querySelector("[data-lang-toggle]");
+    const originalTitle = document.title;
+
+    const bnText = {
+      "Adarsha Nursery School": "এ. ম. আদর্শ নার্সারি শিশু বিদ্যাপিঠ",
+      "Private learning campus": "একটি বেসরকারি শিক্ষাপ্রতিষ্ঠান",
+      "Notice": "নোটিশ",
+      "New Admission": "নতুন ভর্তি",
+      "Next Class": "পরবর্তী শ্রেণি",
+      "Back to Home": "হোমে ফিরে যান",
+      "About | Adarsha Nursery School": "পরিচিতি | আদর্শ নার্সারি স্কুল",
+      "About the school": "স্কুল পরিচিতি",
+      "A caring private school for confident early beginnings.": "আত্মবিশ্বাসী শুরুর জন্য একটি যত্নশীল বেসরকারি বিদ্যালয়।",
+      "Dummy details: Adarsha Nursery School was founded to give children a calm, polished, and joyful start to formal education through thoughtful academics and attentive care.": "নমুনা তথ্য: শিশুদের মনোযোগী পড়াশোনা ও যত্নশীল পরিবেশে শান্ত, সুন্দর এবং আনন্দময় প্রাতিষ্ঠানিক শিক্ষার শুরু দেওয়ার জন্য আদর্শ নার্সারি স্কুল প্রতিষ্ঠিত হয়েছে।",
+      "Mission": "মিশন",
+      "To nurture disciplined, curious, emotionally secure children through strong foundations and warm guidance.": "মজবুত ভিত্তি ও কোমল নির্দেশনার মাধ্যমে শৃঙ্খলাবদ্ধ, কৌতূহলী ও মানসিকভাবে নিরাপদ শিশু গড়ে তোলা।",
+      "Vision": "লক্ষ্য",
+      "To become a trusted local school known for academic readiness, respectful behavior, and parent confidence.": "শিক্ষাগত প্রস্তুতি, ভদ্র আচরণ এবং অভিভাবকের আস্থার জন্য পরিচিত একটি নির্ভরযোগ্য স্থানীয় স্কুল হওয়া।",
+      "Promise": "প্রতিশ্রুতি",
+      "Clean classrooms, transparent communication, balanced activities, and steady personal attention for each learner.": "পরিচ্ছন্ন শ্রেণিকক্ষ, স্বচ্ছ যোগাযোগ, ভারসাম্যপূর্ণ কার্যক্রম এবং প্রতিটি শিক্ষার্থীর প্রতি নিয়মিত ব্যক্তিগত মনোযোগ।",
+      "What makes us premium": "আমাদের বিশেষত্ব",
+      "Details that parents notice and children feel.": "যে যত্ন অভিভাবকরা দেখেন, শিশুরা অনুভব করে।",
+      "Replace this area with the principal message, school history, affiliation details, teacher qualifications, transport route, and fee office timing.": "এখানে প্রধান শিক্ষকের বার্তা, স্কুলের ইতিহাস, অনুমোদনের তথ্য, শিক্ষকদের যোগ্যতা, পরিবহন রুট এবং ফি অফিসের সময় বসান।",
+      "Area": "বিষয়",
+      "Dummy Detail": "নমুনা তথ্য",
+      "Classes": "শ্রেণি",
+      "Playgroup, Nursery, LKG, UKG, Class I to IV": "প্লেগ্রুপ, নার্সারি, এলকেজি, ইউকেজি, প্রথম থেকে চতুর্থ শ্রেণি",
+      "Timings": "সময়",
+      "Morning shift from 8:30 AM to 12:45 PM": "সকাল ৮:৩০টা থেকে দুপুর ১২:৪৫টা পর্যন্ত",
+      "Facilities": "সুবিধা",
+      "Activity room, reading corner, safe play area, clean drinking water": "কার্যক্রম কক্ষ, পড়ার কোণা, নিরাপদ খেলার জায়গা, বিশুদ্ধ পানীয় জল",
+      "Communication": "যোগাযোগ",
+      "Notice board, parent meetings, phone support, printed circulars": "নোটিশ বোর্ড, অভিভাবক মিটিং, ফোন সহায়তা, প্রিন্টেড সার্কুলার",
+      "Dummy address: Main Road, Your City.": "নমুনা ঠিকানা: মেইন রোড, আপনার শহর।"
+    };
+
+
+    const originalText = new WeakMap();
+    const translatableNodes = [];
+
+    if (!("IntersectionObserver" in window)) {
+      revealItems.forEach((item) => item.classList.add("in-view"));
+      counters.forEach((item) => animateCounter(item));
+    }
+
+    function collectTextNodes(root) {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+        acceptNode(node) {
+          const text = node.textContent.trim();
+          const parent = node.parentElement;
+
+          if (!text || !parent || parent.closest("[data-count]") || ["SCRIPT", "STYLE"].includes(parent.tagName)) {
+            return NodeFilter.FILTER_REJECT;
+          }
+
+          return NodeFilter.FILTER_ACCEPT;
+        }
+      });
+
+      while (walker.nextNode()) {
+        const node = walker.currentNode;
+        originalText.set(node, node.textContent);
+        translatableNodes.push(node);
+      }
+    }
+
+    function translateValue(value, lang) {
+      const trimmed = value.trim();
+      if (lang === "en" || !bnText[trimmed]) return value;
+      return value.replace(trimmed, bnText[trimmed]);
+    }
+
+    function applyLanguage(lang) {
+      document.documentElement.lang = lang === "bn" ? "bn" : "en";
+
+      translatableNodes.forEach((node) => {
+        const original = originalText.get(node);
+        node.textContent = translateValue(original, lang);
+      });
+
+      document.title = translateValue(originalTitle, lang);
+
+      if (languageToggle) {
+        languageToggle.textContent = lang === "bn" ? "English" : "বাংলা";
+        languageToggle.setAttribute("aria-label", lang === "bn" ? "Switch to English" : "বাংলায় দেখুন");
+      }
+    }
+
+    collectTextNodes(document.body);
+
+    const savedLanguage = localStorage.getItem("schoolLanguage") || "bn";
+    applyLanguage(savedLanguage);
+
+    if (languageToggle) {
+      languageToggle.addEventListener("click", () => {
+        const nextLanguage = document.documentElement.lang === "bn" ? "en" : "bn";
+        localStorage.setItem("schoolLanguage", nextLanguage);
+        applyLanguage(nextLanguage);
+      });
+    }
+
+    function updateChrome() {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const ratio = maxScroll > 0 ? window.scrollY / maxScroll : 0;
+
+      if (progress) {
+        progress.style.width = `${Math.min(100, Math.max(0, ratio * 100))}%`;
+      }
+
+      if (header) {
+        header.classList.toggle("is-scrolled", window.scrollY > 12);
+      }
+
+      parallaxItems.forEach((item) => {
+        const speed = Number(item.dataset.parallax || 0.12);
+        item.style.transform = `translate3d(0, ${window.scrollY * speed}px, 0)`;
+      });
+    }
+
+    function animateCounter(item) {
+      const target = Number(item.dataset.count || 0);
+      const suffix = item.dataset.suffix || "";
+      const duration = 1200;
+      const start = performance.now();
+
+      function tick(now) {
+        const progressValue = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - progressValue, 3);
+        item.textContent = `${Math.round(target * eased)}${suffix}`;
+
+        if (progressValue < 1) {
+          requestAnimationFrame(tick);
+        }
+      }
+
+      requestAnimationFrame(tick);
+    }
+
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+
+            entry.target.classList.add("in-view");
+
+            if (entry.target.hasAttribute("data-count") && !entry.target.dataset.done) {
+              entry.target.dataset.done = "true";
+              animateCounter(entry.target);
+            }
+
+            observer.unobserve(entry.target);
+          });
+        },
+        { threshold: 0.16 }
+      );
+
+      revealItems.forEach((item) => observer.observe(item));
+      counters.forEach((item) => observer.observe(item));
+    }
+
+    window.addEventListener("scroll", updateChrome, { passive: true });
+    window.addEventListener("resize", updateChrome);
+    updateChrome();
+  </script>
 </body>
 </html>

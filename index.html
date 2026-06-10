@@ -37,8 +37,8 @@
     <section class="hero">
       <div class="hero-grid">
         <div class="reveal">
-          <p class="eyebrow">Admissions open for 2026-27</p>
-          <h1>Adarsha Nursery School</h1>
+          <p class="eyebrow">for your children's bright future</p>
+          <h2>Adarsha Nursery School</h2>
           <p class="lead">A warm, carefully guided private school where early learners begin with confidence, curiosity, language, numbers, movement, art, and everyday kindness.</p>
           <div class="hero-actions">
             <a class="button primary" href="templates/newAdmission.html">Start Admission</a>
@@ -184,6 +184,208 @@
     </div>
   </footer>
 
-  <script src="assets/script.js"></script>
+  <script>
+    const progress = document.querySelector(".site-progress");
+    const header = document.querySelector(".site-header");
+    const revealItems = document.querySelectorAll(".reveal");
+    const counters = document.querySelectorAll("[data-count]");
+    const parallaxItems = document.querySelectorAll("[data-parallax]");
+    const languageToggle = document.querySelector("[data-lang-toggle]");
+    const originalTitle = document.title;
+
+    const bnText = {
+      "Adarsha Nursery School": "এ. ম. আদর্শ নার্সারি শিশু বিদ্যাপিঠ",
+      "Private learning campus": "একটি বেসরকারি শিক্ষাপ্রতিষ্ঠান",
+      "About": "পরিচিতি",
+      "Notice": "নোটিশ",
+      "New Admission": "নতুন ভর্তি",
+      "Next Class": "পরবর্তী শ্রেণি",
+      "Back to top": "উপরে যান",
+      "for your children's bright future": "আপনার শিশুর সফল ভবিষ্যৎ এর কামনাই",
+      "A warm, carefully guided private school where early learners begin with confidence, curiosity, language, numbers, movement, art, and everyday kindness.": "একটি যত্নশীল বেসরকারি বিদ্যালয়, যেখানে ছোট শিক্ষার্থীরা আত্মবিশ্বাস, কৌতূহল, ভাষা, সংখ্যা, খেলাধুলা, শিল্পচর্চা ও সুন্দর আচরণের মাধ্যমে শেখা শুরু করে।",
+      "Start Admission": "ভর্তি শুরু করুন",
+      "Latest Notices": "সর্বশেষ নোটিশ",
+      "Years of trusted care": "বছরের নির্ভরযোগ্য যত্ন",
+      "Focused classroom ratio": "প্রতিটি শ্রেণিতে সীমিত সংখ্যক শিক্ষার্থী",
+      "Parent satisfaction": "অভিভাবকদের আস্থা",
+      "Explore": "দেখুন",
+      "Our school story and campus values": "আমাদের স্কুলের গল্প ও মূল্যবোধ",
+      "Visit About": "পরিচিতি দেখুন",
+      "Updates": "নতুন খবর",
+      "Announcements, dates, and reminders": "ঘোষণা, তারিখ ও স্মরণিকা",
+      "Read Notices": "নোটিশ পড়ুন",
+      "Admission": "ভর্তি",
+      "Documents for new student admission": "নতুন শিক্ষার্থী ভর্তির কাগজপত্র",
+      "View Checklist": "চেকলিস্ট দেখুন",
+      "Promotion": "উচ্চতর শ্রেণিতে ভর্তি",
+      "Next class admission requirements": "পরবর্তী শ্রেণিতে ভর্তির প্রয়োজনীয়তা",
+      "View Details": "বিস্তারিত দেখুন",
+      "The Adarsha approach": "আদর্শের শিক্ষাদর্শন",
+      "Small-school attention with a premium learning rhythm.": "ছোট পরিসরে যত্নশীল ও মানসম্মত শিক্ষার পরিবেশ।",
+      "Dummy details: Our classrooms blend phonics, early numeracy, storytelling, craft, free play, assembly habits, and gentle discipline. Parents receive clear updates, children receive patient guidance, and each day feels purposeful without feeling pressured.": "নমুনা তথ্য: আমাদের শ্রেণিকক্ষে ধ্বনি শেখা, প্রাথমিক গণনা, গল্প বলা, কারুশিল্প, মুক্ত খেলা, অ্যাসেম্বলি অভ্যাস ও কোমল শৃঙ্খলা একসঙ্গে চলে। অভিভাবকেরা স্পষ্ট বার্তা পান, শিশুরা ধৈর্যশীল নির্দেশনা পায়, আর প্রতিটি দিন চাপ ছাড়াই অর্থবহ হয়।",
+      "Foundational Learning": "ভিত্তিমূলক শিক্ষা",
+      "Language, numbers, motor skills, memory, rhythm, and creative expression for nursery to primary readiness.": "নার্সারি থেকে প্রাথমিক স্তরের প্রস্তুতির জন্য ভাষা, সংখ্যা, হাতের কাজের দক্ষতা, স্মৃতি, ছন্দ ও সৃজনশীল প্রকাশ।",
+      "Careful Supervision": "নিবিড় তত্ত্বাবধান",
+      "Structured arrival, dispersal, classroom hygiene, monitored play areas, and child-friendly routines.": "নিয়মিত আগমন-প্রস্থান, শ্রেণিকক্ষ পরিচ্ছন্নতা, তত্ত্বাবধানে খেলার জায়গা এবং শিশুবান্ধব রুটিন।",
+      "Parent Partnership": "অভিভাবকদের সহযোগিতা",
+      "Regular notices, meeting windows, admission support, progress remarks, and simple communication.": "নিয়মিত নোটিশ, মিটিং সময়, ভর্তি সহায়তা, অগ্রগতি মন্তব্য এবং সহজ যোগাযোগ।",
+      "Campus life": "বিদ্যালয় জীবন",
+      "Bright days, steady habits, and room to grow.": "আনন্দময় পরিবেশ, সুন্দর অভ্যাস এবং বিকাশের সুযোগ।",
+      "Replace this with your actual campus details: school timings, transport points, uniform policy, principal message, extracurricular list, fee counter timing, and contact numbers.": "এখানে আপনার বিদ্যালয়ের প্রকৃত তথ্য বসান: স্কুলের সময়সূচি, পরিবহন পয়েন্ট, ইউনিফর্ম নীতি, প্রধান শিক্ষকের বার্তা, সহশিক্ষা কার্যক্রম, ফি জমার সময় এবং যোগাযোগ নম্বর।",
+      "Morning Assembly": "সকালের অ্যাসেম্বলি",
+      "Prayer, thought of the day, news reading, and confidence practice.": "প্রার্থনা, দিনের ভাবনা, সংবাদ পাঠ এবং আত্মবিশ্বাস চর্চা।",
+      "Activity Rooms": "কার্যক্রম কক্ষ",
+      "Art, rhyme, reading corners, sensory learning, and guided play.": "চিত্রকলা, ছড়া, পড়ার কোণা, ইন্দ্রিয়ভিত্তিক শেখা এবং নির্দেশিত খেলা।",
+      "Secure Campus": "নিরাপদ বিদ্যালয় পরিবেশ",
+      "Visitor register, supervised gate, staff support, and clean classrooms.": "ভিজিটর রেজিস্টার, তত্ত্বাবধানে গেট, কর্মী সহায়তা এবং পরিচ্ছন্ন শ্রেণিকক্ষ।",
+      "Celebrations": "উৎসব",
+      "Annual day, sports day, festivals, exhibitions, and parent events.": "বার্ষিক অনুষ্ঠান, ক্রীড়া দিবস, উৎসব, প্রদর্শনী এবং অভিভাবক অনুষ্ঠান।",
+      "Admission flow": "ভর্তি প্রক্রিয়া",
+      "A clear four-step admission experience.": "চার ধাপে সহজ ভর্তি প্রক্রিয়া।",
+      "These are dummy steps for now. You can replace the exact dates, fees, and office timing later.": "এগুলি আপাতত নমুনা ধাপ। পরে সঠিক তারিখ, ফি এবং অফিস সময় বসাতে পারবেন।",
+      "Collect Form": "ফর্ম সংগ্রহ",
+      "Visit the school office between 10:00 AM and 2:00 PM with parent ID proof.": "অভিভাবকের পরিচয়পত্র নিয়ে সকাল ১০:০০টা থেকে দুপুর ২:০০টার মধ্যে স্কুল অফিসে আসুন।",
+      "Submit Documents": "কাগজপত্র জমা",
+      "Bring photographs, birth certificate, address proof, and previous school record if applicable.": "ছবি, জন্ম সনদ, ঠিকানার প্রমাণ এবং প্রয়োজনে পূর্বের স্কুলের রেকর্ড আনুন।",
+      "Interaction": "সাক্ষাৎকার",
+      "Child and parents meet the admission desk for a short friendly conversation.": "শিশু ও অভিভাবক ভর্তি সহায়তা কেন্দ্রে সংক্ষিপ্ত বন্ধুসুলভ আলোচনায় অংশ নেবেন।",
+      "Confirm Seat": "আসন নিশ্চিতকরণ",
+      "Complete fee formalities and collect books, uniform guidance, and school calendar.": "ফি সংক্রান্ত কাজ সম্পন্ন করে বই, ইউনিফর্ম নির্দেশনা এবং স্কুল ক্যালেন্ডার সংগ্রহ করুন।",
+      "Office help desk": "বিদ্যালয় সহায়তা কেন্দ্র",
+      "Ready for admission details?": "ভর্তির তথ্য জানতে প্রস্তুত?",
+      "Dummy contact: Adarsha Nursery School, Main Road, Your City. Phone: 98765 43210. Email: office@adarshaschool.example": "নমুনা যোগাযোগ: আদর্শ নার্সারি স্কুল, মেইন রোড, আপনার শহর। ফোন: ৯৮৭৬৫ ৪৩২১০। ই-মেইল: office@adarshaschool.example",
+      "View Admission Items": "ভর্তির জিনিসপত্র দেখুন",
+      "Premium static school website template with dummy details.": "নমুনা তথ্যসহ মানসম্মত স্থির স্কুল ওয়েবসাইট।"
+    };
+
+
+    const originalText = new WeakMap();
+    const translatableNodes = [];
+
+    if (!("IntersectionObserver" in window)) {
+      revealItems.forEach((item) => item.classList.add("in-view"));
+      counters.forEach((item) => animateCounter(item));
+    }
+
+    function collectTextNodes(root) {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+        acceptNode(node) {
+          const text = node.textContent.trim();
+          const parent = node.parentElement;
+
+          if (!text || !parent || parent.closest("[data-count]") || ["SCRIPT", "STYLE"].includes(parent.tagName)) {
+            return NodeFilter.FILTER_REJECT;
+          }
+
+          return NodeFilter.FILTER_ACCEPT;
+        }
+      });
+
+      while (walker.nextNode()) {
+        const node = walker.currentNode;
+        originalText.set(node, node.textContent);
+        translatableNodes.push(node);
+      }
+    }
+
+    function translateValue(value, lang) {
+      const trimmed = value.trim();
+      if (lang === "en" || !bnText[trimmed]) return value;
+      return value.replace(trimmed, bnText[trimmed]);
+    }
+
+    function applyLanguage(lang) {
+      document.documentElement.lang = lang === "bn" ? "bn" : "en";
+
+      translatableNodes.forEach((node) => {
+        const original = originalText.get(node);
+        node.textContent = translateValue(original, lang);
+      });
+
+      document.title = translateValue(originalTitle, lang);
+
+      if (languageToggle) {
+        languageToggle.textContent = lang === "bn" ? "English" : "বাংলা";
+        languageToggle.setAttribute("aria-label", lang === "bn" ? "Switch to English" : "বাংলায় দেখুন");
+      }
+    }
+
+    collectTextNodes(document.body);
+
+    const savedLanguage = localStorage.getItem("schoolLanguage") || "bn";
+    applyLanguage(savedLanguage);
+
+    if (languageToggle) {
+      languageToggle.addEventListener("click", () => {
+        const nextLanguage = document.documentElement.lang === "bn" ? "en" : "bn";
+        localStorage.setItem("schoolLanguage", nextLanguage);
+        applyLanguage(nextLanguage);
+      });
+    }
+
+    function updateChrome() {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const ratio = maxScroll > 0 ? window.scrollY / maxScroll : 0;
+
+      if (progress) {
+        progress.style.width = `${Math.min(100, Math.max(0, ratio * 100))}%`;
+      }
+
+      if (header) {
+        header.classList.toggle("is-scrolled", window.scrollY > 12);
+      }
+
+      parallaxItems.forEach((item) => {
+        const speed = Number(item.dataset.parallax || 0.12);
+        item.style.transform = `translate3d(0, ${window.scrollY * speed}px, 0)`;
+      });
+    }
+
+    function animateCounter(item) {
+      const target = Number(item.dataset.count || 0);
+      const suffix = item.dataset.suffix || "";
+      const duration = 1200;
+      const start = performance.now();
+
+      function tick(now) {
+        const progressValue = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - progressValue, 3);
+        item.textContent = `${Math.round(target * eased)}${suffix}`;
+
+        if (progressValue < 1) {
+          requestAnimationFrame(tick);
+        }
+      }
+
+      requestAnimationFrame(tick);
+    }
+
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+
+            entry.target.classList.add("in-view");
+
+            if (entry.target.hasAttribute("data-count") && !entry.target.dataset.done) {
+              entry.target.dataset.done = "true";
+              animateCounter(entry.target);
+            }
+
+            observer.unobserve(entry.target);
+          });
+        },
+        { threshold: 0.16 }
+      );
+
+      revealItems.forEach((item) => observer.observe(item));
+      counters.forEach((item) => observer.observe(item));
+    }
+
+    window.addEventListener("scroll", updateChrome, { passive: true });
+    window.addEventListener("resize", updateChrome);
+    updateChrome();
+  </script>
 </body>
 </html>

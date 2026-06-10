@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: school-static-site
+    runtime: static
+    buildCommand: ""
+    staticPublishPath: .
