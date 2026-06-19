@@ -297,7 +297,6 @@ html[lang="bn"] h2 {
   overflow: hidden;
   box-shadow: var(--shadow);
   isolation: isolate;
-  transform: translateZ(0);
 }
 
 .hero-card::before {
@@ -307,8 +306,7 @@ html[lang="bn"] h2 {
   z-index: -2;
   background:
     linear-gradient(180deg, rgba(18, 50, 74, 0.1), rgba(18, 50, 74, 0.62)),
-    url("../images/homepaged.jpg") center/cover;
-  transform: scale(1.06);
+    url("../images/homepaged-optimized.jpg") center/cover;
 }
 
 .hero-card::after {
@@ -336,7 +334,7 @@ html[lang="bn"] h2 {
   border: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: 8px;
   background: rgba(13, 31, 45, 0.5);
-  backdrop-filter: blur(14px);
+  backdrop-filter: blur(8px);
 }
 
 .metric strong {
@@ -537,7 +535,7 @@ h3 {
   color: #fff;
   background:
     linear-gradient(90deg, rgba(18, 50, 74, 0.92), rgba(19, 127, 122, 0.74)),
-    url("../images/confidentAboutPage.jpeg") center/cover fixed;
+    url("../images/confidentAboutPage.jpeg") center/cover;
 }
 
 .campus-band h2,
@@ -753,13 +751,15 @@ tr:last-child td {
 
 .reveal {
   opacity: 0;
-  transform: translateY(26px);
-  transition: opacity 720ms ease, transform 720ms ease;
+  transform: translate3d(0, 18px, 0);
+  transition: opacity 420ms ease, transform 420ms ease;
+  will-change: opacity, transform;
 }
 
 .reveal.in-view {
   opacity: 1;
-  transform: translateY(0);
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
 }
 
 .reveal.delay-1 {
@@ -786,6 +786,7 @@ tr:last-child td {
   .reveal {
     opacity: 1;
     transform: none;
+    will-change: auto;
   }
 }
 
@@ -816,6 +817,26 @@ tr:last-child td {
 }
 
 @media (max-width: 720px) {
+  body {
+    background: linear-gradient(180deg, #fffdf7 0%, #f6faf8 52%, #eef7f8 100%);
+  }
+
+  .site-header,
+  .metric,
+  .campus-list div {
+    backdrop-filter: none;
+  }
+
+  .hero-card,
+  .photo-tile,
+  .quick-card,
+  .info-card,
+  .notice-card,
+  .check-card,
+  .timeline-item {
+    box-shadow: 0 12px 28px rgba(18, 50, 74, 0.08);
+  }
+
   .nav-shell {
     align-items: flex-start;
     flex-direction: column;
@@ -840,7 +861,7 @@ tr:last-child td {
   }
 
   .hero-card {
-    min-height: 470px;
+    min-height: 390px;
   }
 
   .floating-panel {

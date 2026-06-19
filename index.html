@@ -45,7 +45,7 @@
             <a class="button gold" href="templates/notice.html">Latest Notices</a>
           </div>
         </div>
-        <div class="hero-card reveal delay-1" data-parallax="0.04" aria-label="Children learning in a bright classroom">
+        <div class="hero-card reveal delay-1" aria-label="Children learning in a bright classroom">
           <div class="floating-panel">
             <div class="metric">
               <strong class="reveal" data-count="27" data-suffix="+">0</strong>
@@ -323,6 +323,11 @@
       });
     }
 
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const finePointerScreen = window.matchMedia("(min-width: 981px) and (pointer: fine)");
+    const canUseParallax = () => !prefersReducedMotion.matches && finePointerScreen.matches;
+    let chromeFrame = null;
+
     function updateChrome() {
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
       const ratio = maxScroll > 0 ? window.scrollY / maxScroll : 0;
@@ -335,9 +340,24 @@
         header.classList.toggle("is-scrolled", window.scrollY > 12);
       }
 
-      parallaxItems.forEach((item) => {
-        const speed = Number(item.dataset.parallax || 0.12);
-        item.style.transform = `translate3d(0, ${window.scrollY * speed}px, 0)`;
+      if (canUseParallax()) {
+        parallaxItems.forEach((item) => {
+          const speed = Number(item.dataset.parallax || 0.12);
+          item.style.transform = `translate3d(0, ${window.scrollY * speed}px, 0)`;
+        });
+      } else {
+        parallaxItems.forEach((item) => {
+          item.style.transform = "";
+        });
+      }
+    }
+
+    function requestChromeUpdate() {
+      if (chromeFrame) return;
+
+      chromeFrame = requestAnimationFrame(() => {
+        chromeFrame = null;
+        updateChrome();
       });
     }
 
@@ -383,8 +403,17 @@
       counters.forEach((item) => observer.observe(item));
     }
 
-    window.addEventListener("scroll", updateChrome, { passive: true });
-    window.addEventListener("resize", updateChrome);
+    window.addEventListener("scroll", requestChromeUpdate, { passive: true });
+    window.addEventListener("resize", requestChromeUpdate);
+
+    if (prefersReducedMotion.addEventListener) {
+      prefersReducedMotion.addEventListener("change", requestChromeUpdate);
+      finePointerScreen.addEventListener("change", requestChromeUpdate);
+    } else if (prefersReducedMotion.addListener) {
+      prefersReducedMotion.addListener(requestChromeUpdate);
+      finePointerScreen.addListener(requestChromeUpdate);
+    }
+
     updateChrome();
   </script>
 </body>
