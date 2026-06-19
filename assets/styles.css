@@ -307,7 +307,7 @@ html[lang="bn"] h2 {
   z-index: -2;
   background:
     linear-gradient(180deg, rgba(18, 50, 74, 0.1), rgba(18, 50, 74, 0.62)),
-    url("https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1300&q=82") center/cover;
+    url("../images/homepaged.jpg") center/cover;
   transform: scale(1.06);
 }
 
@@ -483,7 +483,7 @@ h3 {
   height: 78%;
   left: 0;
   top: 0;
-  --img: url("https://images.unsplash.com/photo-1588072432836-e10032774350?auto=format&fit=crop&w=1100&q=82");
+  --img: url("../images/premiumStudyBig.jpg");
 }
 
 .photo-small {
@@ -492,7 +492,7 @@ h3 {
   right: 0;
   bottom: 0;
   border: 10px solid var(--paper);
-  --img: url("https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=900&q=82");
+  --img: url("../images/premiumStudySmall.jpeg");
 }
 
 .feature-grid,
@@ -537,7 +537,7 @@ h3 {
   color: #fff;
   background:
     linear-gradient(90deg, rgba(18, 50, 74, 0.92), rgba(19, 127, 122, 0.74)),
-    url("https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1600&q=82") center/cover fixed;
+    url("../images/confidentAboutPage.jpeg") center/cover fixed;
 }
 
 .campus-band h2,
@@ -634,19 +634,19 @@ h3 {
 }
 
 .about-img {
-  --page-img: url("https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1100&q=82");
+  --page-img: url("../images/confidentAboutPage.jpeg");
 }
 
 .notice-img {
-  --page-img: url("https://images.unsplash.com/photo-1491841550275-ad7854e35ca6?auto=format&fit=crop&w=1100&q=82");
+  --page-img: url("../images/noticePage.jpg");
 }
 
 .admission-img {
-  --page-img: url("https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=1100&q=82");
+  --page-img: url("../images/newAdmission.jpeg");
 }
 
 .next-img {
-  --page-img: url("https://images.unsplash.com/photo-1606761568499-6d2451b23c66?auto=format&fit=crop&w=1100&q=82");
+  --page-img: url("../images/premiumStudySmall.jpeg");
 }
 
 .subnav {
