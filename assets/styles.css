@@ -149,14 +149,14 @@ img {
 
 .nav-links .primary-link,
 .primary-link {
-  color: #fff;
-  background: var(--navy);
-  border-color: var(--navy);
+  color: var(--navy);
+  background: rgba(255, 255, 255, 0.66);
+  border-color: rgba(19, 127, 122, 0.24);
 }
 
 .nav-links .primary-link:hover,
 .primary-link:hover {
-  background: #0e2a3f;
+  background: rgba(255, 255, 255, 0.86);
 }
 
 .language-toggle {
